@@ -1,0 +1,27 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# One free web service. Postgres lives on Neon (paste its connection string
+# for DATABASE_URL). No Redis needed.
+
+services:
+  - type: web
+    name: lightdey
+    runtime: python
+    plan: free
+    buildCommand: bash build.sh
+    startCommand: bash start.sh
+    healthCheckPath: /api/health/
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false # your Neon connection string
+      - key: VAPID_PUBLIC_KEY
+        sync: false # from `python manage.py generate_vapid_keys` (optional: enables "light is back" alerts)
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_SUBJECT
+        sync: false # e.g. mailto:you@example.com
